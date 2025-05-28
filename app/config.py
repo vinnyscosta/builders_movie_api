@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Configuração do JWT
+SECRET_KEY = os.environ.get("SECRET_KEY", "mysecretkey")
+ALGORITHM = "HS256"
+
 # Configuração do banco de dados
 USER = quote_plus(os.environ.get('DATABASE_USERNAME', 'root'))
 PASS = quote_plus(os.environ.get('DATABASE_PASSWORD', ''))
