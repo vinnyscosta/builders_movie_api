@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.services import OMDBService
-from app.routes import omdb_router
+from app.routes import (
+    auth_router,
+    desafio_router,
+    omdb_router,
+)
 from app.config import TOKEN_OMDB
 
 # Configuração da classe de integração do OMDB
@@ -29,7 +33,19 @@ async def root():
 
 # Incluir rotas
 app.include_router(
+    auth_router,
+    prefix="/auth",
+    tags=["Authentication"],
+)
+
+app.include_router(
+    desafio_router,
+    prefix="/desafio",
+    tags=["Desafio Builders"],
+)
+
+app.include_router(
     omdb_router,
     prefix="/omdb",
-    tags=["OMDB"]
+    tags=["OMDb"],
 )
