@@ -35,9 +35,9 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@app.get("/", tags=["Root - Health Check"])
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Acesse /docs para mais detalhes sobre a API."}
 
 # Incluir rotas
 app.include_router(
