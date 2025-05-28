@@ -33,6 +33,12 @@ async def create_movie(
 
     omdb_movie = await OMDBService.get_details(movie.imdb_id)
 
+    if omdb_movie:
+        raise HTTPException(
+            status_code=400,
+            detail="Filme não encontrado para cadastrado."
+        )
+
     # Criando instancia do novo filme
     new_movie = FavoriteMovie(
         imdb_id=omdb_movie.get('imdbID'),
@@ -52,3 +58,23 @@ async def create_movie(
     await db.refresh(new_movie)
 
     return {"favorite_movies": [new_movie]}
+
+
+@router.get("/movies/{id}", response_model=FavoriteMoviesResponse)
+async def get_movie_by_id(
+    id: int,
+    db: Session = Depends(get_db),
+    user: str = Depends(verify_token)
+):
+    """Rota para busca de filmes favoritos cadastrados por ID."""
+    stmt = select(FavoriteMovie).where(FavoriteMovie.id == id)
+    result = await db.execute(stmt)
+    db_movie = result.scalars().first()
+
+    if not db_movie:
+        raise HTTPException(
+            status_code=400,
+            detail="Filme não encontrado."
+        )
+
+    return {"favorite_movies": [db_movie]}
