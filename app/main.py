@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.services import OMDBService
+from app.database import engine, Base
 from app.routes import (
     auth_router,
     desafio_router,
@@ -17,6 +18,13 @@ app = FastAPI(
     description="API para criação de listas de filmes personalizadas.",
     version="1.0.0",
 )
+
+
+@app.on_event("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,1 +1,1 @@
-from .database import Base, get_db  # noqa: F401
+from .database import engine, Base, get_db  # noqa: F401

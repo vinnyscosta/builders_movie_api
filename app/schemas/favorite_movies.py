@@ -14,6 +14,9 @@ class FavoriteMovie(BaseModel):
     country: str
     rating: str
 
+    class Config:
+        orm_mode = True
+
 
 class FavoriteMoviesResponse(BaseModel):
     favorite_movies: List[FavoriteMovie]

@@ -48,7 +48,7 @@ async def create_movie(
 
     # Criação do filme no banco de dados
     db.add(new_movie)
-    db.commit()
-    db.refresh(new_movie)
+    await db.commit()
+    await db.refresh(new_movie)
 
-    return new_movie
+    return {"favorite_movies": [new_movie]}
