@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+from app.schemas import TokenRequest
 from app.config import (
     SECRET_KEY,
     ALGORITHM,
@@ -15,11 +16,13 @@ router = APIRouter()
 
 
 # Função para criar o token
-def create_access_token(expires_delta: int = 30):
+def create_access_token(username: str = None, expires_delta: int = 30):
     """Cria um token de acesso para o usuario"""
     to_encode = {
         "exp": datetime.utcnow() + (timedelta(minutes=expires_delta)),
-        "sub": "generic_user"
+        # Uso o generic_user para os casos de teste
+        # Mas o usuario seria obrigatorio
+        "sub": username if username else "generic_user"
     }
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -40,6 +43,6 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 
 # Rota para gerar o token
 @router.post("/get-token")
-def generate_token():
-    access_token = create_access_token()
+def generate_token(data: TokenRequest):
+    access_token = create_access_token(username=data.username)
     return {"access_token": access_token, "token_type": "Bearer"}
