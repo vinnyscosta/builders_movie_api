@@ -6,6 +6,7 @@ class FavoriteMovie(Base):
     __tablename__ = "favorite_movies"
 
     id = Column(Integer, primary_key=True, index=True)
+    user = Column(String, index=True)
     imdb_id = Column(String, unique=True, index=True)
     title = Column(String, index=True)
     director = Column(String)

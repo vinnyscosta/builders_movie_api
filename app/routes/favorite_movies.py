@@ -21,7 +21,10 @@ async def create_movie(
 ):
     """Rota para cadastro de filmes favoritos no banco de dados"""
 
-    stmt = select(FavoriteMovie).where(FavoriteMovie.imdb_id == movie.imdb_id)
+    stmt = select(FavoriteMovie).where(
+        FavoriteMovie.imdb_id == movie.imdb_id,
+        FavoriteMovie.user == user
+    )
     result = await db.execute(stmt)
     db_movie = result.scalars().first()
 
@@ -42,6 +45,7 @@ async def create_movie(
     # Criando instancia do novo filme
     new_movie = FavoriteMovie(
         imdb_id=omdb_movie.get('imdbID'),
+        user=user,
         title=omdb_movie.get('Title'),
         director=omdb_movie.get('Director'),
         writer=omdb_movie.get('Writer'),
@@ -67,7 +71,10 @@ async def get_movie_by_id(
     user: str = Depends(verify_token)
 ):
     """Rota para busca de filmes favoritos cadastrados por ID."""
-    stmt = select(FavoriteMovie).where(FavoriteMovie.id == id)
+    stmt = select(FavoriteMovie).where(
+        FavoriteMovie.id == id,
+        FavoriteMovie.user == user
+    )
     result = await db.execute(stmt)
     db_movie = result.scalars().first()
 
@@ -86,7 +93,9 @@ async def get_all_movies(
     user: str = Depends(verify_token)
 ):
     """Rota para busca de todos os filmes favoritos cadastrados."""
-    stmt = select(FavoriteMovie)
+    stmt = select(FavoriteMovie).where(
+        FavoriteMovie.user == user
+    )
     result = await db.execute(stmt)
     db_movie = result.scalars().all()
 

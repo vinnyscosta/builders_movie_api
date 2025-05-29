@@ -4,6 +4,7 @@ from typing import List
 
 class FavoriteMovie(BaseModel):
     id: int
+    user: str
     imdb_id: str
     title: str
     director: str
